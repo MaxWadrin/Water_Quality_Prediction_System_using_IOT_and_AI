@@ -1,5 +1,7 @@
 # Turbidity Sensor
 
+https://wiki.dfrobot.com/Turbidity_sensor_SKU__SEN0189
+
 ## Theory
 
 The turbidity sensor detects water quality by measuring the levels of turbidity, or the opaqueness. Unlike TDS sensor it uses light to detect suspended particles in water by measuring the light transmittance and scattering rate, which changes with the amount of total suspended solids (TSS) in water. As the TSS increases, the liquid turbidity level increases. Turbidity sensors are used to measure water quality in rivers and streams, wastewater and effluent measurements, control instrumentation for settling ponds, sediment transport research and laboratory measurements. The senror involved a light transmitter and a reciever. In clear water all light is passed through the sensor, thus the voltage output is maximum and turbididty is minimum. As cloudyness increases the recieved voltage drops as light keeps on scattering. The unit measuring turbidity is NTU, also it is known as JTU (Jackson Turbidity Unit), 1JTU = 1NTU = 1 mg/L
