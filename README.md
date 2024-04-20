@@ -1,7 +1,15 @@
 # Water_Quality_Prediction_System_using_IOT_and_AI
 
-This is a hybrid system involving IOT and AI to predict water quality and suggest various water treatment process. The project is divided into following parts
+This is a hybrid system involving IOT and AI to predict water quality and suggest various water treatment processes. The project is divided into the following parts:
 
-Electronics | IOT | Cloud | AI | Python
+- Electronics
+- IOT
+- Cloud
+- AI
+- Python
 
-Each method is connected such that data moves seamlessly throughout the system. Each section is put in different folders with files and codes. Read the README file carefully to understand the entire dynmics of the project.
+## Overview
+
+Sensors gather information about the water sample, MCU records the information, and pushes the data to a real-time database in the cloud. Various use cases with their thresholds are stored in a database in the cloud. Using Python, we extract the data as a JSON file and feed it into an LSTM model using a specifically engineered prompt. The AI gives the final output.
+
+Each method is connected such that data moves seamlessly throughout the system. Each section is placed in different folders with files and codes. Read the README file carefully to understand the entire dynamics of the project.
