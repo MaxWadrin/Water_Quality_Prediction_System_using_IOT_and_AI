@@ -7,6 +7,7 @@ Before calibration, it's crucial to determine the operating voltage of the analo
 
 ## ADC Resolution and Mapping
 The ADC quantizes the sensor voltage levels into individual bits based on its resolution. For Arduino with a 10-bit ADC, the mapping is from 0 volts to 5 volts, corresponding to 0 to 1023 ADC values. Similarly, for ESP32 with a 12-bit ADC operating at 3.3 volts, the mapping is from 0 volts to 3.3 volts, corresponding to 0 to 4095 ADC values. Adjustments to the mapping may be necessary for accuracy, considering the actual operating voltage measured. For my case ADC vlaue of 4095 in ESP32 Devkit V4 is 3.29 volts.
+
 ![image](https://github.com/MaxWadrin/Water_Quality_Prediction_System_using_IOT_and_AI/assets/61119096/52108ac7-7a31-458d-9e11-d30f47a988f4)
 
 Thats a signal mapped to 3 bit ADC
