@@ -24,3 +24,15 @@ m is the slope of the line (typically determined through calibration, such as wi
 b is the y-intercept. 
 
 Calibration involves using buffer solutions at specific pH values, such as pH 4 and pH 9, to establish the slope of the linear equation. In the process of converting voltage readings from a pH probe into pH values, calibration and amplification techniques play crucial roles. Ideally, a properly calibrated pH probe outputs 0 millivolts when the pH of the solution being measured is precisely 7. However, variations in the probe's zero point may cause this value to shift slightly, typically by around 7 pH units plus or minus some value, depending on the specific probe and its calibration. This can be found in the datasheet of the probe.
+
+## Code
+
+<#define SensorPin A0          // Define the pin to which the pH meter Analog output is connected
+
+const int MaxOperVolt = 5;    // Maximum operating voltage of the Arduino (in volts)
+const int MaxVoltatpH14 = 4;  // Maximum voltage output of the pH amplifier at pH 14 (in volts)
+const int MaxADCout = 1024;   // Maximum output of the analog-to-digital converter (ADC)
+const int avgCount = 6;       // Number of readings to average for smoothing
+const int Decimal = 2;        // Decimal point of the ph output
+
+float phPerVolt;              // Ratio of pH change per volt>
