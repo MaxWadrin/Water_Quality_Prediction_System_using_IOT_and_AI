@@ -12,27 +12,21 @@ A glass electrode pH sensor functions based on the principle of ion-selective gl
 
 The analog out is connected to the ADC pin of Arduino / ESP32 / RasberiPI / STM32 based on the microcontroller you are using.
 
-## Calbiration
+## Calbiration Code
 
 The amplifier module runs on a 5V supply. The process of converting voltage readings from a pH probe into pH values involves calibration and amplification techniques. pH values are linearly related to voltage, often represented by 
 
 y=mx+b, where 
 
-/y is the pH value, 
-\x is the voltage, 
+y is the pH value, 
+x is the voltage, 
 m is the slope of the line (typically determined through calibration, such as with buffer solutions at known pH values), and 
 b is the y-intercept. 
 
-Calibration involves using buffer solutions at specific pH values, such as pH 4 and pH 9, to establish the slope of the linear equation. In the process of converting voltage readings from a pH probe into pH values, calibration and amplification techniques play crucial roles. Ideally, a properly calibrated pH probe outputs 0 millivolts when the pH of the solution being measured is precisely 7. However, variations in the probe's zero point may cause this value to shift slightly, typically by around 7 pH units plus or minus some value, depending on the specific probe and its calibration. This can be found in the datasheet of the probe.
+Calibration involves using buffer solutions at specific pH values, such as pH 4 and pH 9, to establish the slope of the linear equation. In the process of converting voltage readings from a pH probe into pH values, calibration and amplification techniques play crucial roles. Ideally, a properly calibrated pH probe outputs 0 millivolts when the pH of the solution being measured is precisely 7. However, variations in the probe's zero point may cause this value to shift slightly, typically by around 7 pH units plus or minus some value, depending on the specific probe and its calibration. This can be found in the datasheet of the probe. Which indicates that 0PH means a negative voltage. Thus a amplifier OpAmp raises the voltage to the mid point of the ADC, say if 2.5 volts for Arduino operating at 5V and 1.75 volts for ESP32 operating at 3.3 Volts. The middle point factor can cange based on the maximum operating point of the ADC pin if you use a multimeter. Thus anything below mid point volt to 0 volt is acidic and anything above mid point volt to maximum operating volt is alkaline. 
 
-## Code
+Some amplifier module comes with a potentiometer. Here before connecting the probe you can short the positive and negative of the probe input. This gives a 0 Volt input to the amplifier. Then you can adjust the potentiometer to check if the amplifier putput at 0 volts is right at the mid point voltage of the MCU.
 
-<#define SensorPin A0          // Define the pin to which the pH meter Analog output is connected
+Once the amplifier is calibrated, its time to calibrate the probe. Make a buffer solution of PH 14. How to make the solution is out of the scope of this project. Record the maximum amplified voltage output by the sensor and put it in the code. Remember the maximum recorded voltage might have some error depending on the temperature and electrode. Refer the data sheet for calibration. The code finds a linear relationship where we have a 0 PH at 0 Volts and 14 Ph at the recorded voltage. 
 
-const int MaxOperVolt = 5;    // Maximum operating voltage of the Arduino (in volts)
-const int MaxVoltatpH14 = 4;  // Maximum voltage output of the pH amplifier at pH 14 (in volts)
-const int MaxADCout = 1024;   // Maximum output of the analog-to-digital converter (ADC)
-const int avgCount = 6;       // Number of readings to average for smoothing
-const int Decimal = 2;        // Decimal point of the ph output
-
-float phPerVolt;              // Ratio of pH change per volt>
+Thus it maps the output of the sensor with the proper pH value. 
