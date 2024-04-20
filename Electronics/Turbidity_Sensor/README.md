@@ -24,3 +24,8 @@ Even based on temperature the turbidity varies. We create two piece wise linear 
 - Temperature compensation linear function
 
 ## Procedure
+
+- Record the temperature reading from the [Temperature_Sensor] and record the ambient temperature.
+- Make the necessary connections.
+- Burn the [Turbidity_Code] using arduino IDE. Include the ambient temperature for compensation.
+- Measure the Turbidity of water.
