@@ -18,8 +18,8 @@ The amplifier module runs on a 5V supply. The process of converting voltage read
 
 y=mx+b, where 
 
-y is the pH value, 
-x is the voltage, 
+/y is the pH value, 
+\x is the voltage, 
 m is the slope of the line (typically determined through calibration, such as with buffer solutions at known pH values), and 
 b is the y-intercept. 
 
