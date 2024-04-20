@@ -2,6 +2,8 @@
 
 ![image](https://github.com/MaxWadrin/Water_Quality_Prediction_System_using_IOT_and_AI/assets/61119096/5859d1da-d609-455d-8970-9753ee243a47)
 
+https://robu.in/product/analog-ph-sensor-kit/?gad_source=1&gclid=CjwKCAjwz42xBhB9EiwA48pT78LejV66Ygd9VnVqsLG8AcrK48_14jYucqlse65glDpCayCzuBN_9hoCQIMQAvD_BwE
+
 ## Theory 
 
 ### PH Electrode
