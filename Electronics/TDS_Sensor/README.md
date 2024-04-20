@@ -1,5 +1,7 @@
 # TDS
 
+https://wiki.dfrobot.com/Gravity__Analog_TDS_Sensor___Meter_For_Arduino_SKU__SEN0244
+
 ## Theory
 
 TDS (Total Dissolved Solids) indicates how many milligrams of soluble solids are dissolved in one liter of water. 
