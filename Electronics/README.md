@@ -5,10 +5,10 @@ Aquire most common feature data from water sample like TDS, Turbidity, Temperatu
 # Apparatus
 
 - MCU - ESP32 Devkit V4
-- PH -
-- TUrbidity -
-- Temperature -
-- TDS - 
+- PH - Analog Gravity PH Meter V2.0
+- TUrbidity - SEN0189
+- Temperature - MAX6675 with J-type thermocouple
+- TDS - Analog Gravity TDS Meter V1.0
 
 # Thoery
 
@@ -39,6 +39,6 @@ By following these guidelines and understanding the characteristics of your MCU 
 
 # Future Scope
 
-- More accurate sensor probe can be used.
+- More accurate sensor probe can be used. Like RTD would be a better option.
 - 24 Bit ADC can be used to fetch the ADC value
 - Additional sensors like DO and sensors for detecting various individual nutrients in water can be also incorporated in similar manner
