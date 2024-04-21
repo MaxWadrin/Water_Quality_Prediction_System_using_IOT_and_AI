@@ -17,7 +17,7 @@ There are various ways of measuring temperature. I am using a K-Type thermocoupl
 
 - Connect the probe using the screw terminal.
 - Connect SO CS and SCK at 3 GPIO pins of the MCU
-- - Install MAX6675 library in Arduino IDE before burnign the code
+- Install MAX6675 library in Arduino IDE before burnign the code
 - Burn the Temp_Code
 - Read the temperature on serial monitor
 
