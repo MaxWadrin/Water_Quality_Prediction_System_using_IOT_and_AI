@@ -37,6 +37,10 @@ By following these guidelines and understanding the characteristics of your MCU 
 
 # Procedure
 
+- Open the folder for sensor calibration, run the steps and calibrate the sensor.
+- Adjust the definations based on pin config and calibration.
+- Burn the combined code.
+
 # Future Scope
 
 - More accurate sensor probe can be used. Like RTD would be a better option.
