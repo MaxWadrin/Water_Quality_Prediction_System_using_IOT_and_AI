@@ -1,0 +1,157 @@
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <max6675.h>
+
+const char* ssid = "POCOM4";
+const char* password = "cduy8440";
+const char* firebaseUrl = "https://sbhrccit003-default-rtdb.asia-southeast1.firebasedatabase.app/realtime_sample.json";
+
+const int pHSensorPin = 35;        // Pin connected to the pH sensor
+const int turbiditySensorPin = 32; // Pin connected to the turbidity sensor
+const int tdsSensorPin = 34;       // Pin connected to the TDS sensor
+const int thermoDO = 26;
+const int thermoCS = 25;
+const int thermoCLK = 33;
+
+
+const float maxVoltage = 3.29;     // Maximum voltage
+const int maxADCValue = 4095;      // Maximum ADC value for 12-bit ADC
+const float temperature = 25.0;     // Temperature for compensation
+
+const int SCOUNT = 30;             // Number of sample points for median filtering
+
+MAX6675 thermocouple(thermoCLK, thermoCS, thermoDO);
+
+void setup() {
+  Serial.begin(115200); // Initialize serial communication
+  pinMode(pHSensorPin, INPUT);          // Set pH sensor pin as input
+  pinMode(turbiditySensorPin, INPUT);   // Set turbidity sensor pin as input
+  pinMode(tdsSensorPin, INPUT);         // Set TDS sensor pin as input
+
+  // Connect to WiFi
+  WiFi.begin(ssid, password);
+  Serial.print("Connecting to WiFi");
+  
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  
+  Serial.println("\nConnected to WiFi");
+}
+
+void loop() {
+  // Read sensor values
+  int phAdcValue = analogRead(pHSensorPin);               // Read pH ADC value
+  int turbidityAdcValue = analogRead(turbiditySensorPin); // Read turbidity ADC value
+  int tdsAdcValue = analogRead(tdsSensorPin);             // Read TDS ADC value
+  float thermocoupleTemp = thermocouple.readCelsius();    // Read temperature from thermocouple
+  
+  // Convert sensor readings to actual values
+  float phValue = (phAdcValue * maxVoltage) / maxADCValue;                         // Convert pH ADC value to voltage
+  float turbidityValue = convertToNTU(turbidityAdcValue);                          // Convert turbidity ADC value to NTU
+  float tdsValue = convertToPPM(tdsAdcValue);                                      // Convert TDS ADC value to ppm
+
+  // Print sensor readings to serial monitor
+  Serial.print("pH Value: ");
+  Serial.println(phValue);
+  Serial.print("Turbidity Value (NTU): ");
+  Serial.println(turbidityValue, 6);
+  Serial.print("TDS Value (ppm): ");
+  Serial.println(tdsValue);
+  Serial.print("Thermocouple Temperature: ");
+  Serial.println(thermocoupleTemp);
+
+  // Upload sensor data to Firebase
+  uploadDataToFirebase(phAdcValue, phValue, turbidityAdcValue, turbidityValue, tdsAdcValue, tdsValue, thermocoupleTemp);
+
+  delay(5000); // Wait for 5 seconds before taking readings again
+}
+
+// Function to convert turbidity ADC value to NTU
+float convertToNTU(int adcValue) {
+  // Convert ADC value to voltage
+  float voltage = adcValue * (maxVoltage / maxADCValue);
+  
+  // Convert voltage to turbidity in NTU units based on the inverse linear relationship
+  float turbidityNTU = maxVoltage - voltage;
+  
+  return turbidityNTU;
+}
+
+// Function to convert TDS ADC value to ppm using median filtering method
+float convertToPPM(int adcValue) {
+  int analogBuffer[SCOUNT];    // Buffer to store analog values
+  
+  // Store ADC value in buffer
+  for (int i = 0; i < SCOUNT; i++) {
+    analogBuffer[i] = analogRead(tdsSensorPin);
+    delay(10); // Delay to ensure a proper sample
+  }
+  
+  // Sort the buffer to find median
+  int medianValue = getMedianNum(analogBuffer, SCOUNT);
+  
+  // Convert median ADC value to voltage
+  float averageVoltage = medianValue * maxVoltage / maxADCValue;
+  
+  // Apply temperature compensation
+  float compensationCoefficient = 1.0 + 0.02 * (temperature - 25.0);
+  float compensationVoltage = averageVoltage / compensationCoefficient;
+  
+  // Convert voltage value to TDS value
+  float tdsValue = (133.42 * compensationVoltage * compensationVoltage * compensationVoltage - 255.86 * compensationVoltage * compensationVoltage + 857.39 * compensationVoltage) * 0.5;
+  
+  return tdsValue; // Return TDS value in ppm
+}
+
+// Function to find median value from an array
+int getMedianNum(int bArray[], int iFilterLen) {
+  int bTab[iFilterLen];
+  for (byte i = 0; i < iFilterLen; i++)
+    bTab[i] = bArray[i];
+  int i, j, bTemp;
+  for (j = 0; j < iFilterLen - 1; j++) {
+    for (i = 0; i < iFilterLen - j - 1; i++) {
+      if (bTab[i] > bTab[i + 1]) {
+        bTemp = bTab[i];
+        bTab[i] = bTab[i + 1];
+        bTab[i + 1] = bTemp;
+      }
+    }
+  }
+  if ((iFilterLen & 1) > 0)
+    bTemp = bTab[(iFilterLen - 1) / 2];
+  else
+    bTemp = (bTab[iFilterLen / 2] + bTab[iFilterLen / 2 - 1]) / 2;
+  return bTemp;
+}
+
+// Function to upload sensor data to Firebase
+void uploadDataToFirebase(int phAdcValue, float phValue, int turbidityAdcValue, float turbidityValue, int tdsAdcValue, float tdsValue, float thermocoupleTemp) {
+  // Create HTTP client object
+  HTTPClient http;
+
+  // Construct the URL
+  String url = firebaseUrl;
+
+  // Construct the JSON payload
+  String payload = "{\"pH_ADC\": " + String(phAdcValue) + ", \"pH_Voltage\": " + String(phValue, 2) + ", \"Turbidity_ADC\": " + String(turbidityAdcValue) + ", \"Turbidity_NTU\": " + String(turbidityValue, 6) + ", \"TDS_ADC\": " + String(tdsAdcValue) + ", \"TDS_ppm\": " + String(tdsValue, 0) + ", \"Temperature_C\": " + String(thermocoupleTemp) + "}";
+
+  // Send HTTP PUT request
+  http.begin(url);
+  http.addHeader("Content-Type", "application/json");
+  int httpResponseCode = http.PUT(payload);
+
+  // Check for response
+  if (httpResponseCode > 0) {
+    Serial.print("Data upload to Firebase successful. HTTP response code: ");
+    Serial.println(httpResponseCode);
+  } else {
+    Serial.print("Data upload to Firebase failed. HTTP error code: ");
+    Serial.println(httpResponseCode);
+  }
+
+  // Free resources
+  http.end();
+}
